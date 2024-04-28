@@ -10,7 +10,7 @@ import time
 
 class Satellite_class:
     def __init__(self, data):
-        self.MUE = 398600.441
+        self.MUE = 398600.44
         self.EARTH_MASS = 5.972e24
         self.G = 6.67384e-11
         self.NAME = data[0]
