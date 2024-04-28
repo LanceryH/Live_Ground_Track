@@ -1,3 +1,3 @@
 # LGT
 
-![Figure_1](https://github.com/LanceryH/Live_Ground_Track/assets/108919405/116cb8a3-e8ee-46a4-9928-4b5a96254b88)
+![image](https://github.com/LanceryH/Live_Ground_Track/assets/108919405/a16da9f7-5bfc-4c0a-9912-d27e167e37a5)
