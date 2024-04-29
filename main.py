@@ -209,8 +209,8 @@ class Satellite_class:
         CS=map.nightshade(self.d2)
         x, y = map(self.lon, self.lat)
         x_0, y_0 = map(self.lon[0], self.lat[0])
-        map.plot(x, y, color="r")
-        map.scatter(x_0, y_0, color="r")
+        plt.plot(x, y, color="r")
+        plt.plot(x_0, y_0, color="r", marker="o")
         plt.title(f"Ground track {self.NAME}")
         plt.show()
         
