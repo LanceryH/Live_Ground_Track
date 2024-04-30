@@ -14,7 +14,11 @@ class Planet:
             self.mass = 5.9722e24
             self.radius = 6378000
             self.gravity = 9.81
-
+        if self.name == "Kerbin":
+            self.mass = 5.2982e22
+            self.radius = 6e5
+            self.gravity = 9.81
+            
 @dataclass
 class Body:
     name: str
@@ -23,7 +27,7 @@ class Body:
     z: float
     vz: float
     mass: float
-    
+    mass1: float = 1000.0
     altitud: float = 0.0
     
     def __post_init__(self):
@@ -32,8 +36,9 @@ class Body:
 
 @dataclass
 class Booster:
-    thrust: float #Newtons
-    ISP: float = 200 #s
+    thrust: float = 167970.0#Newtons
+    ISP1: float = 250 #s
+    ISP2: float = 400 #s
         
 @dataclass
 class MotionSimulator:
@@ -41,7 +46,10 @@ class MotionSimulator:
     booster: Booster
     body: Body
     G: float = 6.6742e-11
-    
+    t_burn_1: float = 38.0
+    t_step1: float = 2.0
+    t_burn_2: float = 150.0
+    t_end: float = 168.0
     def __post_init__(self):
         self.period = 2*np.pi/np.sqrt(self.G*self.planet.mass)*self.body.r0**(3/2)
         
@@ -53,16 +61,32 @@ class MotionSimulator:
     
     def thrust(self, t):
         theta = 0.0
-        if t<5:
+        if t<self.t_burn_1:
+            theta = 10*np.pi/180
             thrust_F = self.booster.thrust
-            thrust_x = thrust_F*np.cos(theta)
-            thrust_y = thrust_F*np.sin(theta)
-        else:
+            self.ve = self.booster.ISP1*9.81
+            mdot = -thrust_F/self.ve
+        if (t>self.t_burn_1) and (t<(self.t_burn_1 + self.t_step1)):
+            theta = 0.0
             thrust_F = 0.0
-            thrust_x = 0.0
-            thrust_y = 0.0
-        ve = self.booster.ISP*9.81
-        mdot = -thrust_F/ve
+            mdot = -self.body.mass1/self.t_step1
+        if t>(self.t_burn_1 + self.t_step1):
+            theta = 0.0
+            thrust_F = 0.0
+            mdot = 0.0
+        if (t>self.t_burn_2) and (t<self.t_end):    
+            theta = 90*np.pi/180
+            thrust_F = self.booster.thrust
+            self.ve = self.booster.ISP2*9.81
+            mdot = -thrust_F/self.ve
+        if t>self.t_end:
+            theta = 0.0
+            thrust_F = 0.0
+            mdot = 0.0
+            
+            
+        thrust_x = thrust_F*np.cos(theta)
+        thrust_y = thrust_F*np.sin(theta)
         return np.array([thrust_x, thrust_y]), mdot
     
     def derivatives(self, state_in, t):
@@ -73,7 +97,14 @@ class MotionSimulator:
         aero_F = np.array([0.0, 0.0])
         
         F = gravity_F + aero_F + thrust_F
-        ddot = F / mass
+        
+        if mass>0:
+            ddot = F / mass
+        else:
+            ddot = 0.0
+            mdot = 0.0
+        
+        
         
         state_out = [xdot, ddot[0], zdot, ddot[1], mdot]
         
@@ -84,18 +115,18 @@ class MotionSimulator:
         return state_out
 
 # Example usage:
-earth = Planet("Earth")
-booster = Booster(20)
-v_orbt = np.sqrt(MotionSimulator.G*earth.mass/(earth.radius+6e5))
-satellite = Body("Sat", earth.radius, 0.0, 0.0, 0.0, 0.64) #[x,vx,z,vz]
-simulator = MotionSimulator(earth, booster, satellite)
-t_total = np.linspace(0, 25, 1000)
+planet = Planet("Kerbin")
+booster = Booster()
+v_orbt = np.sqrt(MotionSimulator.G*planet.mass/(planet.radius+6e5))
+satellite = Body("Sat", planet.radius, 0.0, 0.0, 0.0, 5300) #[x,vx,z,vz]
+simulator = MotionSimulator(planet, booster, satellite)
+t_total = np.linspace(0, 5000, 1000)
 theta = np.linspace(0,2*np.pi,1000)
 state_out = simulator.simulate(t_total)
 
 plt.figure()
 plt.plot(state_out[:, 0], state_out[:, 2])
-plt.plot(earth.radius*np.sin(theta), earth.radius*np.cos(theta))
+plt.plot(planet.radius*np.sin(theta), planet.radius*np.cos(theta))
 plt.xlabel('Time')
 plt.ylabel('Position')
 plt.title('Position vs Time')
@@ -105,6 +136,12 @@ plt.show()
 
 plt.figure()
 plt.plot(t_total, state_out[:, 4])
+plt.tight_layout()
+plt.grid()
+plt.show()
+
+plt.figure()
+plt.plot(t_total, state_out[:, 0])
 plt.tight_layout()
 plt.grid()
 plt.show()
