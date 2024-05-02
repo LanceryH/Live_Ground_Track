@@ -147,7 +147,7 @@ class Satellite_class:
             lat[j] = lat[j] * (1 - f * f)
 
         return lon, lat
-
+    
     def total(self, nb_orbit=1):
         self.PERIOD=(1/self.MEAN_MOTION)*24*60*60
         self.MEAN_MOTION_SI=2*np.pi/self.PERIOD
