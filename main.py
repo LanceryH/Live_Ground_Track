@@ -184,11 +184,15 @@ class Satellite_class:
 
     def plot(self):
         self.lon,self.lat=self.conversion_to_geodic(self.total(),centered=True)
-        self.lat[np.abs(self.lon+179) <= np.abs(self.lon[1]-self.lon[0])] = np.nan
-        self.lat[np.abs(self.lon+180) <= np.abs(self.lon[1]-self.lon[0])] = np.nan
-        self.lat[np.abs(self.lon+181) <= np.abs(self.lon[1]-self.lon[0])] = np.nan
+        lon_plot = self.lon.tolist()
+        lat_plot = self.lat.tolist()
+
+        for ind_i in range(0,len(lon_plot)-1):
+            if np.abs(lon_plot[ind_i]+lon_plot[ind_i+1])<np.abs(lon_plot[ind_i]):
+                lon_plot[ind_i]=np.nan
+                lat_plot[ind_i]=np.nan
         #self.lon[np.abs(self.lat+90) <= np.abs(self.lat[1]-self.lat[0])] = np.nan
-        
+        self.lon,self.lat = lon_plot,lat_plot
         # miller projection 
         map = Basemap(projection='mill',lon_0=0)
         # plot coastlines, draw label meridians and parallels.
