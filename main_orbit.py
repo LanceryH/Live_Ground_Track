@@ -227,5 +227,3 @@ print(f"You chose: {data_sat[index][0]}")
 satellite = Satellite_class(data_sat[index])
 satellite.plot()
 
-
-#satellite.info()
