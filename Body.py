@@ -8,7 +8,7 @@ class Body:
     name: str
     booster: Booster
     satellite: Satellite
-    radius: float = 0.40 #m
+    radius: float = 0.5 #m
     height: float = 1 #m
     drag_coef: float = 0.4225
     

@@ -8,7 +8,7 @@ let z;
 function preload() {
     table = loadTable('satellite.csv', 'csv');
     lon_lat = loadTable('lon_lat.csv', 'csv');
-    map = loadImage('map.jpg');
+    map = loadImage('MapChart Map.png');
 }
 
 function setup() {
@@ -22,27 +22,25 @@ function setup() {
 function draw() {
     // clear();
     background(0);
-    orbitControl(1,1,1);
-    scale(0.02);
+    orbitControl(1,1,0);
+    scale(0.03);
 
     drawEarth();
     drawTraj();
-    drawPoint(1);
 }
 
 function drawPoint(ind) {
     strokeWeight(10);
-    stroke(128,0,128);
+    stroke(200,200,0);
     push();
-    beginShape(POINTS);
-    vertex(x[ind]/100, y[ind]/100, z[ind]/100);
-    endShape();
+    translate(x[ind]/100, y[ind]/100, z[ind]/100);
+    sphere(10);
     pop();
 }
 
 function drawTraj() {
-    strokeWeight(1);
-    stroke(200,200,0);
+    strokeWeight(2);
+    stroke(200,0,200);
     push();
     beginShape();
     for (let i = 0; i < x.length; i++) { 
@@ -60,6 +58,6 @@ function drawEarth() {
     rotateX(0);
     rotateY(180);
     rotateZ(0);
-    sphere(6e3,30,30);
+    sphere(6e3,50,50);
     pop();
 }

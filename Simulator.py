@@ -9,10 +9,10 @@ class MotionSimulator:
     planet: Planet
     body: Body
     G: float = 6.6742e-11
-    t_burn_1: float = 63.0
+    t_burn_1: float = 70.0
     t_step1: float = 2.0
     t_burn_2: float = 250.0
-    t_end: float = 263.0
+    t_end: float = 265.0
     
     def __post_init__(self):
         self.period = 2*np.pi/np.sqrt(self.G*self.planet.mass)*self.body.r0**(3/2)
