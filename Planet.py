@@ -16,7 +16,7 @@ class Planet:
             self.mass = 5.2982e22
             self.radius = 6e5
             self.gravity = 9.81
-            self.atmo = np.loadtxt("kerbin_atmo.txt")
+            self.atmo = np.loadtxt("resources/kerbin_atmo.txt")
             self.altitud = self.atmo[:,0]
             self.density = self.atmo[:,3]
             self.rhos = self.density[0]
